@@ -1,3 +1,4 @@
+--Da Hood AC Bypass
 getgenv().IsOrixonVerified = true
 
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/fefiewf688w4f464w8f48wf48fw8t844yu4448d/Orixon/main/UI%20Library"))()
@@ -25,6 +26,7 @@ getgenv().AutoKill = false
 getgenv().Fling = false
 getgenv().Fly = false
 getgenv().SelectTarget = false
+getgenv().FlyToggleBind = nil
 
 local aimlockpart = Instance.new("Part", workspace)
 aimlockpart.Anchored = true
@@ -294,6 +296,9 @@ VisualsTab:addSlider("Circle Size", 500, 100, function(v)
 end)
 SettingsTab:addTextbox("UI Toggle", function(v)
     getgenv().UiToggleBind = v
+end)
+SettingsTab:addTextbox("Fly Toggle", function(v)
+    getgenv().FlyToggleBind = v
 end)
 
 TargetTab:addLabel("Target Player")
@@ -596,7 +601,32 @@ spawn(function()
 end)
 
 spawn(function()
-    
+    game:GetService("UserInputService").InputBegan:Connect(function(a, b)
+        if not b then
+            if getgenv().FlyToggleBind ~= nil then
+                if a.KeyCode == Enum.KeyCode[tostring(getgenv().FlyToggleBind)] then
+                    if getgenv().Fly == false then
+                        getgenv().Fly = true
+                        local BG = Instance.new('BodyGyro')
+                        local BV = Instance.new('BodyVelocity')
+                        BG.P = 9e4
+                        BG.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+                        BV.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+                        BG.maxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                        BG.cframe = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                        BV.velocity = Vector3.new(0, 0, 0)
+                        BV.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+                        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+                    else
+                        getgenv().Fly = false
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.BodyGyro:Destroy()
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.BodyVelocity:Destroy()
+                        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+                    end
+                end
+            end
+        end
+    end)
 end)
 
 local function Fly()
@@ -695,3 +725,6 @@ spawn(function()
         end)
     end)
 end)
+
+
+--game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(-250), 0)
