@@ -1,0 +1,697 @@
+getgenv().IsOrixonVerified = true
+
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/fefiewf688w4f464w8f48wf48fw8t844yu4448d/Orixon/main/UI%20Library"))()
+local UI = lib:Create("Orixon")
+
+local MainTab = UI:addTab("Main")
+local CombatTab = UI:addTab("Combat")
+local TargetTab = UI:addTab("Target")
+local VisualsTab = UI:addTab("Visuals")
+local SettingsTab = UI:addTab("Settings")
+
+getgenv().CircleRadius = 100
+getgenv().Prediction = 0.165
+getgenv().AimLock = false
+getgenv().FovCircle = false
+getgenv().UiToggleBind = nil
+getgenv().Speed = false
+getgenv().FlySpeed = 0.25
+getgenv().LockTarget = nil
+getgenv().Name = false
+getgenv().Line = false
+getgenv().Noclip = false
+getgenv().TargetPerson = nil
+getgenv().AutoKill = false
+getgenv().Fling = false
+getgenv().Fly = false
+getgenv().SelectTarget = false
+
+local aimlockpart = Instance.new("Part", workspace)
+aimlockpart.Anchored = true
+aimlockpart.Transparency = 1
+aimlockpart.CanCollide = false
+
+MainTab:addLabel("Movement")
+MainTab:addToggle("Fly", false, function()
+    if getgenv().Fly == false then
+        getgenv().Fly = true
+        local BG = Instance.new('BodyGyro')
+		local BV = Instance.new('BodyVelocity')
+		BG.P = 9e4
+		BG.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+		BV.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+		BG.maxTorque = Vector3.new(math.huge, math.huge, math.huge)
+		BG.cframe = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+		BV.velocity = Vector3.new(0, 0, 0)
+		BV.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+		game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+    else
+        getgenv().Fly = false
+        game.Players.LocalPlayer.Character.HumanoidRootPart.BodyGyro:Destroy()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.BodyVelocity:Destroy()
+        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+    end
+end)
+MainTab:addSlider("Fly Speed", 10, 0.25, function(v)
+    getgenv().FlySpeed = v
+end)
+MainTab:addToggle("Speed", false, function()
+    if getgenv().Speed == false then
+        getgenv().Speed = true
+    else
+        getgenv().Speed = false
+    end
+    if getgenv().Speed == true then
+        Speed()
+    end
+end)
+MainTab:addToggle("Noclip", false, function()
+	if getgenv().Noclip == false then
+		getgenv().Noclip = true
+	else
+		getgenv().Noclip = false
+	end
+
+	if getgenv().Noclip == true then
+		Noclip()
+	else
+		x:Disconnect()
+	end
+end)
+MainTab:addLabel("Animations")
+MainTab:addButton("Normal", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=507765644"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=507767968"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=507766388"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=507766666"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=507765000"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=913376220"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=913402848"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Old School", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=5319816685"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=5319839762"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=5319828216"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=5319831086"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=5319841935"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=5319844329"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=5319847204"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Toy", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Stylish", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616133594"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616134815"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616136790"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616138447"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616139451"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616140816"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616146177"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Cartoony", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=742636889"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=742637151"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=742637544"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=742638445"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=742637942"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=742638842"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=742640026"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Bubbly", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=742636889"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=910001910"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=910004836"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=910009958"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=910016857"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=910025107"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=910034870"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=910028158"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=910030921"
+end)
+MainTab:addButton("Zombie", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616158929"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616160636"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=910028158"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=910030921"
+end)
+MainTab:addButton("Robot", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616086039"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616087089"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616088211"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616088211"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616090535"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616091570"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616095330"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=910028158"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=616095330"
+end)
+MainTab:addButton("Pirate", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=750779899"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=750780242"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=750781874"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=750782770"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=750782230"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=750783738"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=750785693"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Super Hero", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616104706"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616108001"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616111295"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616113536"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616115533"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616117076"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616122287"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Vampire", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083439238"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1083443587"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1083445855"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1083450166"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1083455352"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1083462077"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1083473930"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Elder", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=845392038"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=845396048"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=845397899"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=845400520"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=845398858"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=845386501"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=845403856"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Mage", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=707742142"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=707855907"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=707853694"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=707861613"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=707897309"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addButton("Ninja", function()
+    game.Players.LocalPlayer.Character.Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=656114359"
+    game.Players.LocalPlayer.Character.Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=656115606"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=656117400"
+    game.Players.LocalPlayer.Character.Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=656118341"
+    game.Players.LocalPlayer.Character.Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=656117878"
+    game.Players.LocalPlayer.Character.Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=656118852"
+    game.Players.LocalPlayer.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=656121766"
+    game.Players.LocalPlayer.Character.Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=913384386"
+    game.Players.LocalPlayer.Character.Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=913389285"
+end)
+MainTab:addLabel("Pickup Stuff")
+MainTab:addButton("Pickup Knives", function()
+    for i, v in pairs(game:GetService("Workspace").Ignored.ItemsDrop:GetChildren()) do
+        if v:IsA("Part") and v:FindFirstChild("[Knife]") then
+            firetouchinterest(game.Players.LocalPlayer.Character.Head, v["[Knife]"].Handle, 0)
+        end
+    end
+end)
+MainTab:addButton("Pickup Lockpicks", function()
+    for i, v in pairs(game:GetService("Workspace").Ignored.ItemsDrop:GetChildren()) do
+        if v:IsA("Part") and v:FindFirstChild("[LockPicker]") then
+            firetouchinterest(game.Players.LocalPlayer.Character.Head, v["[LockPicker]"].Handle, 0)
+        end
+    end
+end)
+CombatTab:addLabel("Aim")
+CombatTab:addToggle("Aim Lock", false, function()
+    if getgenv().AimLock == false then
+        getgenv().AimLock = true
+    else
+        getgenv().AimLock = false
+    end
+end)
+CombatTab:addTextbox("Prediction", function(v)
+    getgenv().Prediction = v
+end)
+CombatTab:addToggle("See Selected Player", false, function()
+    if getgenv().SelectTarget == true then
+        getgenv().SelectTarget = false
+    else
+        getgenv().SelectTarget = true
+    end
+end)
+VisualsTab:addLabel("Player ESP")
+VisualsTab:addToggle("Name", false, function()
+    if getgenv().Name == false then
+        getgenv().Name = true
+    else
+        getgenv().Name = false
+    end
+end)
+VisualsTab:addToggle("Line", false, function()
+    if getgenv().Line == false then
+        getgenv().Line = true
+    else
+        getgenv().Line = false
+    end
+end)
+VisualsTab:addLabel("Aimlock Settings")
+VisualsTab:addToggle("FOV Circle", false, function()
+    if getgenv().FovCircle == false then
+        getgenv().FovCircle = true
+    else
+        getgenv().FovCircle = false
+    end
+end)
+VisualsTab:addSlider("Circle Size", 500, 100, function(v)
+    getgenv().CircleRadius = v
+end)
+SettingsTab:addTextbox("UI Toggle", function(v)
+    getgenv().UiToggleBind = v
+end)
+
+TargetTab:addLabel("Target Player")
+TargetTab:addTextbox("Target", function(v)
+    getgenv().TargetPerson = v
+end)
+TargetTab:addToggle("Auto Kill", false, function()
+    if getgenv().AutoKill == false then
+        getgenv().AutoKill = true
+    else
+        getgenv().AutoKill = false
+        if game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("bev") then
+            game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("bev"):Destroy()
+        end
+        if game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("bav") then
+            game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("bav"):Destroy()
+        end
+    end
+    if getgenv().AutoKill == true then
+        AutoKill()
+    end
+end)
+TargetTab:addToggle("Fling", false, function()
+    if getgenv().Fling == false then
+        getgenv().Fling = true
+    else
+        getgenv().Fling = false
+    end
+    if getgenv().Fling == true then
+        Fling()
+    end
+end)
+TargetTab:addButton("Teleport", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame
+end)
+
+local circle = Drawing.new("Circle")
+circle.Radius = getgenv().CircleRadius
+circle.Position = Vector2.new(game.Players.LocalPlayer:GetMouse().X, game.Players.LocalPlayer:GetMouse().Y)
+circle.Thickness = 2
+circle.Visible = false
+circle.Color = Color3.fromRGB(0, 223, 247)
+
+function ClosestToMouse()
+    local SHORT_POS = math.huge
+    local TARGET = nil
+    for i, v in pairs(game.Players:GetPlayers()) do
+        if v.Character and v.Character:FindFirstChild("Head") and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("Humanoid").Health ~= 0 and v.Name ~= game.Players.LocalPlayer.Name then
+            local TARGET_POS, TARGET_ON_SCREEN = workspace.CurrentCamera:WorldToViewportPoint(v.Character.Head.Position)
+            local MAGNITUDE_CHECK = (Vector2.new(TARGET_POS.X, TARGET_POS.Y) - Vector2.new(game.Players.LocalPlayer:GetMouse().X, game.Players.LocalPlayer:GetMouse().Y)).magnitude
+            if TARGET_ON_SCREEN and MAGNITUDE_CHECK < SHORT_POS and MAGNITUDE_CHECK < getgenv().CircleRadius then
+                SHORT_POS = MAGNITUDE_CHECK
+                TARGET = v
+            end
+        end
+    end
+    return TARGET
+end
+
+function Noclip()
+	spawn(function()
+		x = game:GetService("RunService").Stepped:Connect(function()
+			for i, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+				if v:IsA("BasePart") then
+					v.CanCollide = false
+				end
+			end
+		end)
+	end)
+end
+
+spawn(function()
+    while true do
+        wait(0.1)
+        if ClosestToMouse() ~= nil then
+            getgenv().LockTarget = ClosestToMouse().Character
+        else
+            getgenv().LockTarget = nil
+        end
+    end
+end)
+
+spawn(function()
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if getgenv().FovCircle == true then
+            circle.Position = game:GetService("UserInputService"):GetMouseLocation()
+            circle.Radius = getgenv().CircleRadius
+            circle.Visible = true
+        else
+            circle.Visible = false
+        end
+    end)
+end)
+
+spawn(function()
+    local mt = getrawmetatable(game)
+    local oldMeta = mt.__namecall
+    setreadonly(mt, false)
+    mt.__namecall = function(self, ...)
+        local args = {...}
+        local method = getnamecallmethod()
+        if method == "FireServer" and args[1] == "CHECKER_1" or args[1] == "TeleportDetect" or args[1] == "OneMoreTime" then
+            return wait(math.huge)
+        end
+        if (not checkcaller() and getfenv(2).crash) then
+            local fenv = getfenv(2)
+            fenv.crash = function() end
+            fenv.checkChild = function() end
+            setfenv(2, fenv)
+        end
+        return oldMeta(self, ...)
+    end
+end)
+
+coroutine.wrap(function()
+    spawn(function()
+        while wait(0.1) do
+            for i, v in ipairs(getgc()) do 
+                if (debug.getinfo(v).name == 'crash') then
+                    getfenv(v).script:Destroy()
+                end
+            end
+        end
+    end)
+end)()
+
+coroutine.wrap(function()
+    spawn(function()
+        local model = Instance.new("Model", workspace)
+        local Part = Instance.new("Part")
+        local Humanoid = Instance.new("Humanoid")
+        local highlight = Instance.new("Highlight")
+
+        Part.Shape = Enum.PartType.Cylinder
+        Part.Transparency = 0.99
+        Part.Size = Vector3.new(0.001, 27.287, 22.405)
+        Part.Rotation = Vector3.new(0, 0, 90)
+        Part.Anchored = true
+        Part.Parent = model
+        Part.CanCollide = false
+
+        Humanoid.Parent = model
+
+        highlight.Parent = Part
+        highlight.FillTransparency = 1
+
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if getgenv().LockTarget ~= nil then
+                if getgenv().SelectTarget == true then
+                    Part.Position = getgenv().LockTarget.HumanoidRootPart.Position - Vector3.new(0, 3, 0)
+                    highlight.OutlineTransparency = 0
+                else
+                    Part.Position = Vector3.new(0, 100, 0)
+                    highlight.OutlineTransparency = 1
+                end
+            else
+                Part.Position = Vector3.new(0, 100, 0)
+                highlight.OutlineTransparency = 1
+            end
+        end)
+    end)
+end)()
+
+spawn(function()
+    local mt = getrawmetatable(game)
+    local mtOld = mt.__namecall
+    setreadonly(mt, false)
+    mt.__namecall = function(self, ...)
+        local args = {...}
+        local method = getnamecallmethod()
+        if not checkcaller() and method == "FireServer" and tostring(self) == "MainEvent" and args[1] == "UpdateMousePos" and getgenv().AimLock == true then
+            if game.Players.LocalPlayer.Character then
+                if getgenv().LockTarget ~= nil then
+                    if getgenv().LockTarget.Humanoid.Jump == true and getgenv().LockTarget.Humanoid.FloorMaterial == Enum.FloorMaterial.Air then
+                        old_vel = getgenv().LockTarget.LeftUpperLeg.Velocity
+                        getgenv().LockTarget.LeftUpperLeg.AssemblyLinearVelocity = Vector3.new(old_vel.X, 0, old_vel.Z)
+                        args[2] = getgenv().LockTarget.LeftUpperLeg.Position + (getgenv().LockTarget.LeftUpperLeg.Velocity * getgenv().Prediction)
+                    else
+                        old_vel = getgenv().LockTarget.LowerTorso.Velocity
+                        getgenv().LockTarget.LowerTorso.AssemblyLinearVelocity = Vector3.new(old_vel.X, 0, old_vel.Z)
+                        args[2] = getgenv().LockTarget.LowerTorso.Position + (getgenv().LockTarget.LowerTorso.Velocity * getgenv().Prediction)
+                    end
+                end
+            end
+            return self.FireServer(self, unpack(args))
+        end
+        return mtOld(self, ...)
+    end
+end)
+
+function Speed()
+    spawn(function()
+        while getgenv().Speed == true do
+            for i = 1, 4 do
+                wait(0.0000000005)
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.W) and getgenv().Speed == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -3) end
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.S) and getgenv().Speed == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3) end
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.D) and getgenv().Speed == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(3, 0, 0) end
+                if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.A) and getgenv().Speed == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(-3, 0, 0) end
+            end
+        end
+    end)
+end
+
+function AutoKill()
+    spawn(function()
+        local bv = Instance.new("BodyVelocity")
+        local bav = Instance.new("BodyAngularVelocity")
+        if getgenv().AutoKill == true and getgenv().TargetPerson ~= nil then
+            bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+            bv.Velocity = Vector3.new(0, 0, 0)
+            bv.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+            bv.Name = "bev"
+
+            bav.Name = "bav"
+            bav.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+            bav.AngularVelocity = Vector3.new(0, 500, 0)
+            bav.MaxTorque = Vector3.new(0, 64000, 0)
+        end
+        while getgenv().AutoKill == true do
+            wait()
+            if getgenv().TargetPerson ~= nil and game.Players.LocalPlayer.Character and game.Players[getgenv().TargetPerson] and game.Players[getgenv().TargetPerson].Character and game.Players[getgenv().TargetPerson].Character.BodyEffects then
+                if getgenv().Noclip == false then
+                    lib:createNotification("Orixon", "Please enable noclip.")
+                    bv:Destroy()
+                    bav:Destroy()
+                else
+                    if game.Players.LocalPlayer.Backpack:FindFirstChild("Combat") then
+                        game.Players.LocalPlayer.Backpack:FindFirstChild("Combat").Parent = game.Players.LocalPlayer.Character
+                    end
+                    spawn(function()
+                        if game.Players.LocalPlayer.Character.BodyEffects.Attacking.Value == false then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame - Vector3.new(0, 15, 0)
+                        end
+                        if game.Players.LocalPlayer.Character.BodyEffects.Attacking.Value == false then
+                            game.Players.LocalPlayer.Character.Combat:Activate()
+                            wait(1.45)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -2.5)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2.5)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(2.5, 0, 0)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(-2.5, 0, 0)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 4)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -4)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(4, 0, 0)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame * CFrame.new(-4, 0, 0)
+                            wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame
+                            wait(0.1)
+                            if getgenv().AutoKill == true then
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[getgenv().TargetPerson].Character.HumanoidRootPart.CFrame - Vector3.new(0, 15, 0)
+                            end
+                        end
+                    end)
+                end
+            end
+        end
+    end)
+end
+
+function Fling()
+    spawn(function()
+        if game.Workspace.Players:FindFirstChild(getgenv().TargetPerson) then
+            local Thrust = Instance.new('BodyThrust', game.Players.LocalPlayer.Character.HumanoidRootPart)
+            Thrust.Force = Vector3.new(9999,9999,9999)
+            Thrust.Name = "YeetForce"
+            repeat
+                if getgenv().Fling == true and getgenv().TargetPerson ~= nil then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Players:FindFirstChild(getgenv().TargetPerson).HumanoidRootPart.CFrame
+                    Thrust.Location = game.Workspace.Players:FindFirstChild(getgenv().TargetPerson).HumanoidRootPart.Position
+                end
+                game:FindService("RunService").Heartbeat:wait()
+            until getgenv().Fling == false
+        end
+    end)
+end
+
+spawn(function()
+    game:GetService("UserInputService").InputBegan:Connect(function(a, b)
+        if not b then
+            if getgenv().UiToggleBind ~= nil then
+                if a.KeyCode == Enum.KeyCode[tostring(getgenv().UiToggleBind)] then
+                    if game:GetService("CoreGui").OrixonUiLib.Enabled == true then
+                        game:GetService("CoreGui").OrixonUiLib.Enabled = false
+                    else
+                        game:GetService("CoreGui").OrixonUiLib.Enabled = true
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+spawn(function()
+    
+end)
+
+local function Fly()
+    spawn(function()
+        local UIS = game:GetService("UserInputService")
+
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if getgenv().Fly == true then
+                if game.Players.LocalPlayer.Character then
+                    game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+                    local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(game.Workspace.CurrentCamera.CFrame.LookVector.X, game.Workspace.CurrentCamera.CFrame.LookVector.Y, game.Workspace.CurrentCamera.CFrame.LookVector.Z)
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, pos)
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.BodyGyro.CFrame = workspace.CurrentCamera.CoordinateFrame
+                end
+            end
+            if UIS:IsKeyDown(Enum.KeyCode.W) and getgenv().Fly == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -getgenv().FlySpeed) end
+            if UIS:IsKeyDown(Enum.KeyCode.S) and getgenv().Fly == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, getgenv().FlySpeed) end
+            if UIS:IsKeyDown(Enum.KeyCode.D) and getgenv().Fly == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(getgenv().FlySpeed, 0, 0) end
+            if UIS:IsKeyDown(Enum.KeyCode.A) and getgenv().Fly == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(-getgenv().FlySpeed, 0, 0) end
+            if UIS:IsKeyDown(Enum.KeyCode.E) and getgenv().Fly == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, getgenv().FlySpeed, 0) end
+            if UIS:IsKeyDown(Enum.KeyCode.Q) and getgenv().Fly == true then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -getgenv().FlySpeed, 0) end
+        end)
+    end)
+end
+Fly()
+
+spawn(function()
+    function addESP(INSTANCE, NAME)
+        local rs_toggle = nil
+
+        local instanceDrawing = Drawing.new("Text")
+        instanceDrawing.Text = NAME
+        instanceDrawing.Size = 16
+        instanceDrawing.Center = true
+        instanceDrawing.Font = (syn and not RectDynamic) and 2 or 1
+        instanceDrawing.Outline = true
+        instanceDrawing.OutlineColor = Color3.fromRGB(0, 0, 0)
+
+        local instanceDrawing2 = Drawing.new("Line")
+        instanceDrawing2.Visible = false
+        instanceDrawing2.From = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 1)
+        instanceDrawing2.Thickness = 1
+    
+        function drawingUpdater()
+            rs_toggle = game:GetService("RunService").RenderStepped:Connect(function()
+                if INSTANCE then
+                    local instance_pos, instance_onscreen = workspace.CurrentCamera:WorldToViewportPoint(INSTANCE.Position)
+                    local instance_size, instance_onscreen_2 = workspace.CurrentCamera:WorldToViewportPoint(INSTANCE.Size)
+                    if instance_onscreen and getgenv().Name == true then
+                        instanceDrawing.Visible = true
+                        instanceDrawing.Position = Vector2.new(instance_pos.X, instance_pos.Y - 50)
+                        instanceDrawing.Color = Color3.new(255, 0, 0)
+                    else
+                        instanceDrawing.Visible = false
+                    end
+                    if instance_onscreen and getgenv().Line == true then
+                        instanceDrawing2.Visible = true
+                        instanceDrawing2.To = Vector2.new(instance_pos.X, instance_pos.Y)
+                        instanceDrawing2.Color = Color3.new(255, 0, 0)
+                    else
+                        instanceDrawing2.Visible = false
+                    end
+                end
+            end)
+            workspace.DescendantRemoving:Connect(function(v)
+                if v == INSTANCE then
+                    if instanceDrawing then
+                        instanceDrawing:Remove()
+                        instanceDrawing2:Remove()
+                        rs_toggle:Disconnect()
+                    end
+                end
+            end)
+        end
+        drawingUpdater()
+    end
+    for i, v in pairs(game.Players:GetPlayers()) do
+        if v.Character and v.Character:FindFirstChild("Head") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= game.Players.LocalPlayer.Name then
+            addESP(v.Character.Head, v.Name)
+        end
+        v.CharacterAdded:Connect(function(v2)
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                if v2:WaitForChild("HumanoidRootPart") and v2:WaitForChild("Head") then
+                    addESP(v2.Head, v.Name)
+                end
+            end
+        end)
+    end
+    game.Players.PlayerAdded:Connect(function(v)
+        v.CharacterAdded:Connect(function(v2)
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                if v2:WaitForChild("HumanoidRootPart") and v2:WaitForChild("Head") then
+                    addESP(v2.Head, v.Name)
+                end
+            end
+        end)
+    end)
+end)
